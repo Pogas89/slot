@@ -1,0 +1,38 @@
+<mat-card *ngIf="slotmachine">
+    <form  #slotmachineForm="ngForm" class="slotmachine-form" (ngSubmit)="save()">
+      <mat-card-header>
+        <mat-card-title><h2>Edit Slotmachine:</h2></mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-form-field class="slotmachine-full-width">
+          <input matInput type="text" [(ngModel)]="slotmachine.model" placeholder="model" name="model" required="true"/>
+        </mat-form-field>
+        <mat-form-field class="slotmachine-full-width">
+          <input matInput type="text" [(ngModel)]="slotmachine.version" placeholder="version" name="version" required="true"/>
+        </mat-form-field>
+        <mat-form-field class="slotmachine-full-width">
+          <input matInput type="number"  [(ngModel)]="slotmachine.factoryNumber" placeholder="factoryNumber" name="factoryNumber" required="true"/>
+        </mat-form-field>
+        <label class="slotmachine-full-width">techService:  </label>
+        <mat-radio-group  [(ngModel)]="slotmachine.techService" name="techService" required="true">
+          <mat-radio-button value=true>yes</mat-radio-button>
+          <mat-radio-button value=false>no</mat-radio-button>
+        </mat-radio-group>
+        <mat-form-field class="slotmachine-full-width">
+          <input matInput type="number" [(ngModel)]="slotmachine.skksNumber" placeholder="skksNumber" name="skksNumber" required="true"/>
+        </mat-form-field>
+        <mat-form-field class="slotmachine-full-width">
+          <mat-select placeholder="Slotroom"  [(ngModel)]="slotmachine.slotroomId" name="slotroomId">
+            <mat-option *ngFor="let slotroom of slotrooms" value="{{slotroom.id}}">
+              {{slotroom.addres}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!slotmachineForm.form.valid">save</button>
+          <button mat-raised-button color="secondary" type="button" (click)="goBack()">go back</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+  
