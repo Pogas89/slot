@@ -14,7 +14,6 @@ import { SlotmachinesComponent } from './slotmachines/slotmachines.component';
 import { SlotroomAddComponent } from './slotroom-add/slotroom-add.component';
 import { SlotmachineAddComponent } from './slotmachine-add/slotmachine-add.component';
 import { SlotmachineEditComponent } from './slotmachine-edit/slotmachine-edit.component';
-import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -24,8 +23,7 @@ import { LoginComponent } from './login/login.component';
     SlotmachinesComponent,
     SlotroomAddComponent,
     SlotmachineAddComponent,
-    SlotmachineEditComponent,
-    LoginComponent
+    SlotmachineEditComponent
   ],
   imports: [
     BrowserModule,
