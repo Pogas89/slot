@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = SlotgameApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AbstractRestControllerTest {
+public abstract class AbstractRestControllerTest {
     @LocalServerPort
     private int port;
 

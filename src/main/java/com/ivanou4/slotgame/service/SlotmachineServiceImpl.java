@@ -49,6 +49,9 @@ public class SlotmachineServiceImpl implements SlotmachineService {
     @Override
     public SlotmachineDTO get(String id) {
         Slotmachine slotmachine = slotmachineRepo.get(id);
+        if (slotmachine==null){
+            return null;
+        }
         Slotroom slotroom = slotroomRepo.get(slotmachine.getSlotroomId());
         return slotmachineMapper.to(slotmachine, slotroom);
     }
