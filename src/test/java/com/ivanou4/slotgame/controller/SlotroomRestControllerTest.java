@@ -34,7 +34,7 @@ public class SlotroomRestControllerTest extends AbstractRestControllerTest {
     @Test
     public void getAll() {
         ResponseEntity<List<SlotroomDTO>> responseEntity =
-                restTemplate.exchange(createURL("/rest/slotroom"), HttpMethod.GET, null,
+                restTemplate.exchange(createURL("/rest/slotroom"), HttpMethod.GET, entity,
                         new ParameterizedTypeReference<List<SlotroomDTO>>() {
                         });
         List<SlotroomDTO> slotroomDTOS = responseEntity.getBody();
@@ -43,8 +43,9 @@ public class SlotroomRestControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void get() {
-        SlotroomDTO slotroomDTO =
-                restTemplate.getForObject(createURL("/rest/slotroom/{id}"), SlotroomDTO.class, "testId");
+        ResponseEntity<SlotroomDTO> responseEntity = restTemplate.exchange(
+                createURL("/rest/slotroom/{id}"), HttpMethod.GET, entity, SlotroomDTO.class, "testId");
+        SlotroomDTO slotroomDTO = responseEntity.getBody();
         assertThat(slotroomDTO.getId(), is("testId"));
         assertThat(slotroomDTO.getAddres(), is("testAddres"));
         assertThat(slotroomDTO.getName(), is("testName"));
@@ -52,8 +53,8 @@ public class SlotroomRestControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void createWithLocation() {
-        HttpEntity<SlotroomDTO> request = new HttpEntity<>(dozerBeanMapper.
-                map(createSlotroom(null, "testName"),SlotroomDTO.class));
+        HttpEntity<SlotroomDTO> request = new HttpEntity<SlotroomDTO>(dozerBeanMapper.
+                map(createSlotroom(null, "testName"), SlotroomDTO.class), headers);
         SlotroomDTO createdSlotroomDTO = restTemplate.postForObject(createURL("/rest/slotroom"),
                 request, SlotroomDTO.class);
         assertThat(createdSlotroomDTO.getId(), notNullValue());
@@ -63,11 +64,12 @@ public class SlotroomRestControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void update() {
-        SlotroomDTO slotroomDTO = dozerBeanMapper.map(createSlotroom("testId", "newTestName"),SlotroomDTO.class);
-        HttpEntity<SlotroomDTO> request = new HttpEntity<>(slotroomDTO);
+        SlotroomDTO slotroomDTO = dozerBeanMapper.map(createSlotroom("testId", "newTestName"), SlotroomDTO.class);
+        HttpEntity<SlotroomDTO> request = new HttpEntity<>(slotroomDTO, headers);
         restTemplate.put(createURL("/rest/slotroom"), request, SlotroomDTO.class);
-        SlotroomDTO updatedSlotroom = restTemplate.getForObject(createURL("/rest/slotroom/{id}"),
-                SlotroomDTO.class, "testId");
+        ResponseEntity<SlotroomDTO> responseEntity = restTemplate.exchange(
+                createURL("/rest/slotroom/{id}"), HttpMethod.GET, entity, SlotroomDTO.class, "testId");
+        SlotroomDTO updatedSlotroom = responseEntity.getBody();
         assertThat(updatedSlotroom.getId(), is(slotroomDTO.getId()));
         assertThat(updatedSlotroom.getName(), is(slotroomDTO.getName()));
         assertThat(updatedSlotroom.getAddres(), is(slotroomDTO.getAddres()));
@@ -75,9 +77,11 @@ public class SlotroomRestControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void delete() {
-        restTemplate.delete(createURL("/rest/slotroom/{id}"), "testId");
-        SlotroomDTO slotroomDTO = restTemplate.getForObject(createURL("/rest/slotroom/{id}"),
-                SlotroomDTO.class, "testId");
+        restTemplate.exchange(
+                createURL("/rest/slotroom/{id}"), HttpMethod.DELETE, entity, SlotroomDTO.class, "testId");
+        ResponseEntity<SlotroomDTO> responseEntity = restTemplate.exchange(
+                createURL("/rest/slotroom/{id}"), HttpMethod.GET, entity, SlotroomDTO.class, "testId");
+        SlotroomDTO slotroomDTO = responseEntity.getBody();
         assertNull(slotroomDTO);
     }
 }

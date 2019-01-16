@@ -38,7 +38,7 @@ public class SlotmachineRestControllerTest extends AbstractRestControllerTest {
     @Test
     public void getAll() {
         ResponseEntity<List<SlotmachineDTO>> responseEntity =
-                restTemplate.exchange(createURL("/rest/slotmachine"), HttpMethod.GET, null,
+                restTemplate.exchange(createURL("/rest/slotmachine"), HttpMethod.GET, entity,
                         new ParameterizedTypeReference<List<SlotmachineDTO>>() {
                         });
         List<SlotmachineDTO> slotmachineDTOS = responseEntity.getBody();
@@ -47,8 +47,9 @@ public class SlotmachineRestControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void get() {
-        SlotmachineDTO slotmachineDTO =
-                restTemplate.getForObject(createURL("/rest/slotmachine/{id}"), SlotmachineDTO.class, "testId");
+        ResponseEntity<SlotmachineDTO> responseEntity = restTemplate.exchange(createURL("/rest/slotmachine/{id}"), HttpMethod.GET, entity,
+                SlotmachineDTO.class, "testId");
+        SlotmachineDTO slotmachineDTO = responseEntity.getBody();
         assertThat(slotmachineDTO.getId(), is("testId"));
         assertThat(slotmachineDTO.getModel(), is("testModel"));
         assertThat(slotmachineDTO.getVersion(), is("testVersion"));
@@ -64,7 +65,7 @@ public class SlotmachineRestControllerTest extends AbstractRestControllerTest {
         HttpEntity<SlotmachineDTO> request = new HttpEntity<>(slotmachineMapper.to(
                 createSlotmachine(null, "testModel"),
                 createSlotroom("testSlotroomId", "testName")
-                ));
+                ),headers);
         SlotmachineDTO slotmachineDTO = restTemplate.postForObject(createURL("/rest/slotmachine"),
                 request, SlotmachineDTO.class);
         assertThat(slotmachineDTO.getId(), notNullValue());
@@ -81,8 +82,7 @@ public class SlotmachineRestControllerTest extends AbstractRestControllerTest {
     public void update() {
         HttpEntity<SlotmachineDTO> request = new HttpEntity<>(slotmachineMapper.to(
                 createSlotmachine(null, "testModel"),
-                createSlotroom("testSlotroomId", "testName")
-        ));
+                createSlotroom("testSlotroomId", "testName")),headers);
         SlotmachineDTO slotmachineDTO = restTemplate.postForObject(createURL("/rest/slotmachine"),
                 request, SlotmachineDTO.class);
         assertThat(slotmachineDTO.getId(), notNullValue());
@@ -97,9 +97,11 @@ public class SlotmachineRestControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void delete() {
-        restTemplate.delete(createURL("/rest/slotmachine/{id}"), "testId");
-        SlotmachineDTO slotmachineDTO = restTemplate.getForObject(createURL("/rest/slotmachine/{id}"),
+        restTemplate.exchange(createURL("/rest/slotmachine/{id}"), HttpMethod.DELETE, entity,
                 SlotmachineDTO.class, "testId");
+        ResponseEntity<SlotmachineDTO> responseEntity = restTemplate.exchange(createURL("/rest/slotmachine/{id}"), HttpMethod.GET, entity,
+                SlotmachineDTO.class, "testId");
+        SlotmachineDTO slotmachineDTO = responseEntity.getBody();
         assertNull(slotmachineDTO);
     }
 
@@ -108,7 +110,7 @@ public class SlotmachineRestControllerTest extends AbstractRestControllerTest {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(createURL("/rest/slotmachine"))
                 .queryParam("slotroomId", "testSlotroomId");
         ResponseEntity<List<SlotmachineDTO>> responseEntity =
-                restTemplate.exchange(builder.toUriString(), HttpMethod.GET, null,
+                restTemplate.exchange(builder.toUriString(), HttpMethod.GET, entity,
                         new ParameterizedTypeReference<List<SlotmachineDTO>>() {
                         });
         List<SlotmachineDTO> slotmachineDTOS = responseEntity.getBody();

@@ -24,7 +24,7 @@ import static com.ivanou4.slotgame.controller.SlotroomRestController.REST_URL;
 
 @RestController
 @RequestMapping(REST_URL)
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class SlotroomRestController {
     static final String REST_URL = "/rest/slotroom";
 

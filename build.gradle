@@ -1,12 +1,17 @@
 buildscript {
 	ext {
 		springBootVersion = rev_spring_boot
+		herokuPluginVersion = rev_heroku_plugin
 	}
 	repositories {
 		mavenCentral()
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath ("gradle.plugin.com.heroku.sdk:heroku-gradle:${herokuPluginVersion}")
 	}
 }
 
@@ -14,10 +19,30 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: "com.heroku.sdk.heroku-gradle"
 
 group = 'com.ivanou4'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
+
+heroku {
+	appName = 'vitslotserver'
+	includeBuildDir = false
+
+	processTypes(
+			web: "java -jar $buildDir.name/libs/$jar.archiveName"
+	)
+}
+
+deployHeroku {
+	dependsOn build
+
+	doFirst {
+		if (!System.getenv('HEROKU_API_KEY')) {
+			throw new GradleException('Deployment to Heroku requires setting the environment variable HEROKU_API_KEY')
+		}
+	}
+}
 
 repositories {
 	mavenCentral()
@@ -28,7 +53,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.session:spring-session-core'
-	implementation 'io.jsonwebtoken:jjwt:0.9.0'
+	implementation 'io.jsonwebtoken:jjwt:' + rev_jjwt
 	implementation 'net.sf.dozer:dozer:' + rev_dozer_mapper
 	runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

@@ -14,6 +14,11 @@ import { SlotmachinesComponent } from './slotmachines/slotmachines.component';
 import { SlotroomAddComponent } from './slotroom-add/slotroom-add.component';
 import { SlotmachineAddComponent } from './slotmachine-add/slotmachine-add.component';
 import { SlotmachineEditComponent } from './slotmachine-edit/slotmachine-edit.component';
+import { LoginComponent } from './login/login.component';
+import { RegisterComponent } from './register/register.component';
+
+import { httpInterceptorProviders } from './auth/auth-interceptor';
+import { LogoutComponent } from './logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +28,10 @@ import { SlotmachineEditComponent } from './slotmachine-edit/slotmachine-edit.co
     SlotmachinesComponent,
     SlotroomAddComponent,
     SlotmachineAddComponent,
-    SlotmachineEditComponent
+    SlotmachineEditComponent,
+    LoginComponent,
+    RegisterComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +49,7 @@ import { SlotmachineEditComponent } from './slotmachine-edit/slotmachine-edit.co
     MatSelectModule,
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
