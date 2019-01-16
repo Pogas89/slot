@@ -5,6 +5,7 @@ import com.ivanou4.slotgame.to.SlotroomDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,16 +32,19 @@ public class SlotroomRestController {
     private SlotroomService service;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<SlotroomDTO> getAll() {
         return service.getAll();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public SlotroomDTO get(@PathVariable("id") String id) {
         return service.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<SlotroomDTO> createWithLocation(@RequestBody String slotroomJson) {
         SlotroomDTO createdSlotroom = service.create(slotroomJson);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -50,11 +54,13 @@ public class SlotroomRestController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public void update(@RequestBody String slotroomJson) {
         service.update(slotroomJson);
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public void delete(@PathVariable("id") String id) {
         service.delete(id);
     }

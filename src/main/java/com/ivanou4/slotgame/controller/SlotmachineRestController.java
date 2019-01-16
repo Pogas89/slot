@@ -5,6 +5,7 @@ import com.ivanou4.slotgame.to.SlotmachineDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,16 +34,19 @@ public class SlotmachineRestController {
     private SlotmachineService service;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<SlotmachineDTO> getAll() {
         return service.getAll();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public SlotmachineDTO get(@PathVariable("id") String id) {
         return service.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<SlotmachineDTO> createWithLocation(@RequestBody String slotmachineJson) {
         SlotmachineDTO createdSlotmachine = service.create(slotmachineJson);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -52,16 +56,19 @@ public class SlotmachineRestController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public void update(@RequestBody String slotmachineJson) {
         service.update(slotmachineJson);
     }
 
     @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public void delete(@PathVariable("id") String id) {
         service.delete(id);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = "slotroomId")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public List<SlotmachineDTO> getByCompanyId(@RequestParam("slotroomId") String companyId) {
         return service.getBySlotroomId(companyId);
     }
