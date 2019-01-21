@@ -1,0 +1,15 @@
+app:
+  jwtSecret: jwtMySecretKey
+  jwtExpiration: 86400
+  admin.username: admin
+  admin.password: 11111111
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/slotgame
+---
+spring:
+        profiles: production
+        data:
+          mongodb:
+            uri: mongodb://pogas89:110989Pog@ds163054.mlab.com:63054/slotgame

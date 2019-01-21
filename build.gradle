@@ -26,11 +26,9 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 heroku {
-	appName = 'vitslotserver'
-	includeBuildDir = false
-
+	appName="protected-bayou-76067"
 	processTypes(
-			web: "java -jar $buildDir.name/libs/$jar.archiveName"
+			web: "java \$JAVA_OPTS -jar -Dspring.profiles.active=production $buildDir.name/libs/$jar.archiveName --server.port=\$PORT".toString()
 	)
 }
 
