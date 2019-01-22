@@ -6,8 +6,8 @@ import com.ivanou4.slotgame.model.message.JwtResponse;
 import com.ivanou4.slotgame.model.message.LoginForm;
 import com.ivanou4.slotgame.model.message.ResponseMessage;
 import com.ivanou4.slotgame.model.message.SignUpForm;
-import com.ivanou4.slotgame.repo.UserRepo;
 import com.ivanou4.slotgame.security.jwt.JwtProvider;
+import com.ivanou4.slotgame.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +37,7 @@ public class AuthRestController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserRepo userRepo;
+    private UserService userService;
 
     @Autowired
     private PasswordEncoder encoder;
@@ -62,7 +62,7 @@ public class AuthRestController {
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpForm signUpRequest) {
-        if (userRepo.existsByUsername(signUpRequest.getUsername())) {
+        if (userService.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity<>(new ResponseMessage("Fail -> Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -86,7 +86,7 @@ public class AuthRestController {
         });
 
         user.setRoles(roles);
-        userRepo.save(user);
+        userService.save(user);
 
         return new ResponseEntity<>(new ResponseMessage("User registered successfully!"), HttpStatus.OK);
     }
