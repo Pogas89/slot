@@ -1,5 +1,6 @@
 package com.ivanou4.slotgame.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ivanou4.slotgame.model.User;
 import com.ivanou4.slotgame.to.UserDTO;
 
@@ -10,7 +11,7 @@ public interface UserService {
 
     void save(User user);
 
-    void updatePassword(String pass, String id);
+    void updatePassword(JsonNode form);
 
     void resetPassword(String id);
 

@@ -1,11 +1,13 @@
 package com.ivanou4.slotgame.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ivanou4.slotgame.model.User;
 import com.ivanou4.slotgame.repo.UserRepo;
 import com.ivanou4.slotgame.to.UserDTO;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,6 +17,9 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo repo;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     private Mapper dozzerMapper = new DozerBeanMapper();
 
@@ -29,16 +34,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePassword(String pass, String id) {
-        User user = repo.get(id);
-        user.setPassword(pass);
+    public void updatePassword(JsonNode form) {
+        String pass = form.get(0).asText();
+        String username = form.get(1).asText();
+        User user = repo.findByUserName(username).get();
+        user.setPassword(encoder.encode(pass));
         repo.save(user);
     }
 
     @Override
-    public void resetPassword(String username) {
-        User user = repo.findByUserName(username).get();
-        user.setPassword("password");
+    public void resetPassword(String id) {
+        User user = repo.get(id);
+        user.setPassword(encoder.encode("password"));
         repo.save(user);
     }
 

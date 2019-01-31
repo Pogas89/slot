@@ -1,5 +1,6 @@
 package com.ivanou4.slotgame.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.ivanou4.slotgame.service.UserService;
 import com.ivanou4.slotgame.to.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,5 +44,17 @@ public class UserRestController {
     @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable("id") String id) {
         service.delete(id);
+    }
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public void updatePassword(@RequestBody JsonNode form) {
+        service.updatePassword(form);
+    }
+
+    @GetMapping(path = "/reset/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void resetPassword(@PathVariable("id") String id) {
+        service.resetPassword(id);
     }
 }

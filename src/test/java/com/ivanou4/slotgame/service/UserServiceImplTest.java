@@ -1,6 +1,8 @@
 package com.ivanou4.slotgame.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivanou4.slotgame.model.Role;
 import com.ivanou4.slotgame.model.User;
 import com.ivanou4.slotgame.repo.UserRepo;
@@ -15,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +47,8 @@ public class UserServiceImplTest {
     @Mock
     private PasswordEncoder encoder;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @Before
     public void setUp() throws Exception {
         when(encoder.encode(PASSWORD)).thenReturn(PASSWORD);
@@ -67,23 +72,24 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void updatePassword() {
+    public void updatePassword() throws IOException {
         User user = createUser(USER1_ID);
-        when(repo.get(anyString())).thenReturn(user);
+        Optional<User> optionalUser = Optional.of(user);
+        when(repo.findByUserName(any())).thenReturn(optionalUser);
         doNothing().when(repo).save(any(User.class));
-        service.updatePassword(CHANGE_PASSWORD, USER1_ID);
-        verify(repo).get(USER1_ID);
+        JsonNode form = objectMapper.valueToTree(Arrays.asList(CHANGE_PASSWORD, user.getUsername()));
+        service.updatePassword(form);
+        verify(repo).findByUserName(user.getUsername());
         verify(repo).save(user);
     }
 
     @Test
     public void resetPassword() {
         User user = createUser(USER1_ID);
-        Optional<User> optionalUser = Optional.of(user);
-        when(repo.findByUserName(any())).thenReturn(optionalUser);
+        when(repo.get(anyString())).thenReturn(user);
         doNothing().when(repo).save(any(User.class));
-        service.resetPassword(user.getUsername());
-        verify(repo).findByUserName(user.getUsername());
+        service.resetPassword(USER1_ID);
+        verify(repo).get(USER1_ID);
         verify(repo).save(user);
     }
 
